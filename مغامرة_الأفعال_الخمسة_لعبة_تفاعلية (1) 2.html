@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مغامرة الأفعال الخمسة</title>
+<style>
+  :root{
+    --bg1:#fff3fb;
+    --bg2:#eef8ff;
+    --card:#ffffff;
+    --ink:#45385f;
+    --muted:#766a8e;
+    --pink:#ff7eb6;
+    --purple:#9c7bff;
+    --blue:#69b7ff;
+    --yellow:#ffd96a;
+    --green:#67d49e;
+    --red:#ff7b7b;
+    --shadow:0 12px 30px rgba(124, 94, 183, .15);
+    --radius:24px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: Arial, Tahoma, sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at top right, rgba(255,126,182,.15), transparent 30%),
+      radial-gradient(circle at top left, rgba(105,183,255,.15), transparent 30%),
+      linear-gradient(180deg,var(--bg1),var(--bg2));
+    min-height:100vh;
+  }
+  .wrap{
+    max-width:1000px;
+    margin:0 auto;
+    padding:24px 18px 80px;
+  }
+  .hero, .panel, .result {
+    background:rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border:1px solid rgba(255,255,255,.75);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+  .hero{
+    position:relative;
+    overflow:hidden;
+    padding:28px 26px 34px;
+    text-align:center;
+  }
+  .hero h1{
+    font-size:clamp(1.8rem, 4vw, 2.8rem);
+    margin:8px 0 10px;
+    color:#6b4fd3;
+  }
+  .subtitle{
+    font-size:1.1rem;
+    color:var(--muted);
+    margin-bottom:18px;
+  }
+  .student{
+    display:inline-block;
+    background:#fff;
+    border:2px dashed #f4a6ca;
+    padding:12px 20px;
+    border-radius:18px;
+    font-weight:700;
+    line-height:1.9;
+    margin-bottom:18px;
+  }
+  .stickers{
+    font-size:1.8rem;
+    letter-spacing:6px;
+    margin-bottom:8px;
+  }
+  .decor{
+    position:absolute;
+    pointer-events:none;
+    font-size:2rem;
+    opacity:.8;
+    animation:float 4s ease-in-out infinite;
+  }
+  .d1{top:18px;right:18px}
+  .d2{top:20px;left:24px; animation-delay:.5s}
+  .d3{bottom:16px;right:36px; animation-delay:1s}
+  .d4{bottom:20px;left:28px; animation-delay:1.5s}
+  @keyframes float {
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-10px)}
+  }
+  button{
+    border:none;
+    cursor:pointer;
+    font:inherit;
+  }
+  .primary, .secondary{
+    padding:14px 22px;
+    border-radius:16px;
+    font-weight:800;
+    transition:.18s ease;
+  }
+  .primary{
+    color:#fff;
+    background:linear-gradient(135deg, var(--pink), var(--purple));
+    box-shadow:0 10px 20px rgba(156,123,255,.25);
+  }
+  .secondary{
+    background:#f6f2ff;
+    color:#6b4fd3;
+  }
+  .primary:hover, .secondary:hover{transform:translateY(-1px)}
+  .panel{
+    margin-top:20px;
+    padding:20px;
+    display:none;
+  }
+  .topbar{
+    display:flex;
+    gap:14px;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  .chip{
+    background:#fff7cc;
+    color:#6b4f00;
+    border-radius:999px;
+    padding:8px 14px;
+    font-weight:800;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+  }
+  .progress{
+    width:100%;
+    height:15px;
+    border-radius:999px;
+    background:#f0eaff;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .progress span{
+    display:block;
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--blue),var(--green));
+    transition:width .25s ease;
+  }
+  .question-card{
+    background:linear-gradient(180deg,#ffffff,#faf7ff);
+    border:1px solid #efe9ff;
+    border-radius:22px;
+    padding:18px;
+  }
+  .question-number{
+    display:inline-block;
+    background:#f2ebff;
+    color:#6b4fd3;
+    border-radius:999px;
+    padding:6px 12px;
+    font-weight:800;
+    margin-bottom:12px;
+  }
+  .question{
+    font-size:1.45rem;
+    line-height:1.8;
+    font-weight:800;
+    margin-bottom:18px;
+  }
+  .choices{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:12px;
+  }
+  .choice{
+    background:#fff;
+    min-height:72px;
+    padding:12px 16px;
+    border-radius:18px;
+    text-align:center;
+    font-weight:800;
+    font-size:1.08rem;
+    color:var(--ink);
+    box-shadow: inset 0 0 0 2px #eee6ff;
+    transition:.18s ease;
+  }
+  .choice:hover{
+    transform:translateY(-2px);
+    box-shadow: inset 0 0 0 2px #d9ccff, 0 10px 18px rgba(0,0,0,.05);
+  }
+  .choice.correct{background:#ecfff5; box-shadow: inset 0 0 0 2px #7fddb1}
+  .choice.wrong{background:#fff0f0; box-shadow: inset 0 0 0 2px #ff9a9a}
+  .feedback{
+    margin-top:18px;
+    min-height:90px;
+    border-radius:20px;
+    padding:16px 18px;
+    line-height:1.9;
+    background:#fffaf0;
+    border:1px solid #ffe8b8;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .feedback .icon{
+    font-size:2rem;
+    flex:0 0 auto;
+  }
+  .feedback strong{font-size:1.12rem}
+  .feedback.correct{
+    background:#effff6;
+    border-color:#b6eecf;
+  }
+  .feedback.wrong{
+    background:#fff2f2;
+    border-color:#ffc9c9;
+  }
+  .controls{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-top:18px;
+    flex-wrap:wrap;
+  }
+  .result{
+    margin-top:20px;
+    padding:28px 22px;
+    text-align:center;
+    display:none;
+    position:relative;
+    overflow:hidden;
+  }
+  .result h2{
+    font-size:2rem;
+    margin:8px 0;
+    color:#6b4fd3;
+  }
+  .score-big{
+    font-size:3rem;
+    font-weight:900;
+    margin:14px 0;
+    color:#ff6ea8;
+  }
+  .message{
+    font-size:1.1rem;
+    color:var(--muted);
+    line-height:1.9;
+    margin-bottom:18px;
+  }
+  .trophy{font-size:3.4rem}
+  .sparkles{
+    font-size:1.5rem;
+    letter-spacing:8px;
+    margin-bottom:6px;
+  }
+  .badge{
+    display:inline-block;
+    margin-top:10px;
+    background:#fff8d9;
+    color:#7c5b00;
+    font-weight:800;
+    padding:10px 16px;
+    border-radius:999px;
+  }
+  .tiny-note{
+    text-align:center;
+    margin-top:12px;
+    color:var(--muted);
+    font-size:.95rem;
+  }
+  @media (max-width:700px){
+    .choices{grid-template-columns:1fr}
+    .question{font-size:1.25rem}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero" id="intro">
+    <div class="decor d1">⭐</div>
+    <div class="decor d2">📚</div>
+    <div class="decor d3">🎀</div>
+    <div class="decor d4">🖍️</div>
+    <div class="stickers">🌈 ✨ 🦋 📖 🏆</div>
+    <h1>مغامرة الأفعال الخمسة</h1>
+    <div class="subtitle">اضغطي على الإجابة، وسيظهر لك فورًا: <strong>صح ✅</strong> أو <strong>خطأ ❌</strong></div>
+    <div class="student">
+      الطالبة: نوف يوسف العصيمي<br>
+      الصف: الخامس/أ
+    </div>
+    <div class="subtitle">هيا نلعب ونتعلم ونجمع النجوم بطريقة ممتعة 💖</div>
+    <button class="primary" id="startBtn">ابدئي التحدي 🎮</button>
+    <div class="tiny-note">لعبة تفاعلية جاهزة للشرح والمراجعة</div>
+  </section>
+
+  <section class="panel" id="gamePanel">
+    <div class="topbar">
+      <div class="chip" id="scoreChip">⭐ النقاط: ٠</div>
+      <div class="chip" id="countChip">السؤال ١ من ١٠</div>
+    </div>
+    <div class="progress"><span id="progressBar"></span></div>
+
+    <div class="question-card">
+      <div class="question-number" id="questionNumber">السؤال ١</div>
+      <div class="question" id="questionText"></div>
+      <div class="choices" id="choicesBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="icon">💡</div>
+        <div>
+          <strong>تعليمات اللعبة:</strong><br>
+          اختاري الإجابة الصحيحة يا بطلة، وسأخبرك مباشرة إن كانت صحيحة أم خاطئة.
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="secondary" id="retryBtn" style="display:none;">إعادة السؤال 🔄</button>
+      <button class="primary" id="nextBtn" disabled>السؤال التالي ➜</button>
+    </div>
+  </section>
+
+  <section class="result" id="resultPanel">
+    <div class="sparkles">🎉 ⭐ 🎉 ⭐ 🎉</div>
+    <div class="trophy">🏆</div>
+    <h2>بطلة الأفعال الخمسة</h2>
+    <div class="score-big" id="finalScore">٠ / ١٠</div>
+    <div class="message" id="finalMessage"></div>
+    <div class="badge">أحسنتِ يا نوف يوسف العصيمي 💖</div>
+    <div class="controls">
+      <button class="primary" id="restartBtn">إعادة اللعب من البداية</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const questions = [
+  { q: "أيُّ فعلٍ من الأفعال الخمسة؟", choices: ["يكتبُ", "يكتبانِ", "كتبَ", "اكتبْ"], answer: 1, explain: "لأن «يكتبانِ» فعل مضارع اتصل بألف الاثنين." },
+  { q: "أيُّ جملة تحتوي فعلًا من الأفعال الخمسة؟", choices: ["الطالبة تدرسُ", "الطالبان يدرسانِ", "الطالبات يدرسنَ", "درستُ الدرس"], answer: 1, explain: "لأن «يدرسانِ» فعل مضارع اتصل بألف الاثنين." },
+  { q: "علامة رفع الأفعال الخمسة هي:", choices: ["الضمة", "ثبوت النون", "حذف النون", "الفتحة"], answer: 1, explain: "الأفعال الخمسة تُرفع بثبوت النون." },
+  { q: "علامة نصب الأفعال الخمسة هي:", choices: ["ثبوت النون", "الكسرة", "حذف النون", "السكون"], answer: 2, explain: "الأفعال الخمسة تُنصب بحذف النون." },
+  { q: "علامة جزم الأفعال الخمسة هي:", choices: ["حذف النون", "الضمة", "الفتحة", "ثبوت النون"], answer: 0, explain: "الأفعال الخمسة تُجزم بحذف النون." },
+  { q: "اختاري الصواب: لن ____ الدرس.", choices: ["تهملونَ", "تهملوا", "تهملانِ", "تهملُ"], answer: 1, explain: "بعد «لن» يكون الفعل منصوبًا، وعلامة نصب الأفعال الخمسة حذف النون." },
+  { q: "اختاري الصواب: لم ____ عن الموعد.", choices: ["تتأخرونَ", "تتأخروا", "تتأخرانِ", "تتأخرُ"], answer: 1, explain: "بعد «لم» يكون الفعل مجزومًا، وعلامة جزم الأفعال الخمسة حذف النون." },
+  { q: "في جملة «أنتِ تكتبينَ الواجب»، الفعل «تكتبينَ» هو:", choices: ["فعل ماضٍ", "فعل أمر", "من الأفعال الخمسة", "ليس فعلًا"], answer: 2, explain: "لأنه فعل مضارع اتصل بياء المخاطبة." },
+  { q: "أيُّ صيغة من صيغ الأفعال الخمسة؟", choices: ["يفعلان", "يفعلُ", "يفعلنَ", "فعلوا"], answer: 0, explain: "لأن «يفعلان» متصل بألف الاثنين." },
+  { q: "الأفعال الخمسة تتصل بـ:", choices: ["ألف الاثنين وواو الجماعة وياء المخاطبة", "نون النسوة فقط", "تاء التأنيث فقط", "ألف الاثنين فقط"], answer: 0, explain: "هذه هي الاتصالات الثلاثة الأساسية للأفعال الخمسة." }
+];
+
+const arabicNum = (n) => String(n).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+let index = 0;
+let score = 0;
+let locked = false;
+
+const intro = document.getElementById('intro');
+const gamePanel = document.getElementById('gamePanel');
+const resultPanel = document.getElementById('resultPanel');
+const scoreChip = document.getElementById('scoreChip');
+const countChip = document.getElementById('countChip');
+const progressBar = document.getElementById('progressBar');
+const questionNumber = document.getElementById('questionNumber');
+const questionText = document.getElementById('questionText');
+const choicesBox = document.getElementById('choicesBox');
+const feedbackBox = document.getElementById('feedbackBox');
+const nextBtn = document.getElementById('nextBtn');
+const retryBtn = document.getElementById('retryBtn');
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  intro.style.display = 'none';
+  gamePanel.style.display = 'block';
+  renderQuestion();
+});
+document.getElementById('restartBtn').addEventListener('click', () => {
+  index = 0; score = 0; locked = false;
+  resultPanel.style.display = 'none';
+  gamePanel.style.display = 'block';
+  renderQuestion();
+});
+nextBtn.addEventListener('click', () => {
+  index++;
+  if(index < questions.length){ renderQuestion(); } else { showResult(); }
+});
+retryBtn.addEventListener('click', () => { renderQuestion(); });
+
+function renderQuestion(){
+  const item = questions[index];
+  locked = false;
+  nextBtn.disabled = true;
+  retryBtn.style.display = 'none';
+  scoreChip.textContent = `⭐ النقاط: ${arabicNum(score)}`;
+  countChip.textContent = `السؤال ${arabicNum(index + 1)} من ${arabicNum(questions.length)}`;
+  questionNumber.textContent = `السؤال ${arabicNum(index + 1)}`;
+  questionText.textContent = item.q;
+  progressBar.style.width = `${(index / questions.length) * 100}%`;
+  feedbackBox.className = 'feedback';
+  feedbackBox.innerHTML = `<div class="icon">💡</div><div><strong>اختاري الإجابة الصحيحة</strong><br>اضغطي على أحد الخيارات ليظهر لكِ فورًا إن كانت الإجابة صحيحة أم خاطئة.</div>`;
+  choicesBox.innerHTML = '';
+  item.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.innerHTML = choice;
+    btn.addEventListener('click', () => checkAnswer(i, btn));
+    choicesBox.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected, btn){
+  if(locked) return;
+  locked = true;
+  const item = questions[index];
+  const all = [...document.querySelectorAll('.choice')];
+  all.forEach((b, i) => {
+    b.disabled = true;
+    if(i === item.answer){ b.classList.add('correct'); }
+  });
+  if(selected === item.answer){
+    score++;
+    scoreChip.textContent = `⭐ النقاط: ${arabicNum(score)}`;
+    feedbackBox.className = 'feedback correct';
+    feedbackBox.innerHTML = `<div class="icon">✅</div><div><strong>أحسنتِ! إجابة صحيحة</strong><br>${item.explain}</div>`;
+  } else {
+    btn.classList.add('wrong');
+    feedbackBox.className = 'feedback wrong';
+    feedbackBox.innerHTML = `<div class="icon">❌</div><div><strong>حاولي مرة أخرى</strong><br>الإجابة الصحيحة هي: <strong>${item.choices[item.answer]}</strong><br>${item.explain}</div>`;
+    retryBtn.style.display = 'inline-block';
+  }
+  nextBtn.disabled = false;
+  nextBtn.textContent = index === questions.length - 1 ? 'عرض النتيجة النهائية 🏆' : 'السؤال التالي ➜';
+}
+
+function showResult(){
+  gamePanel.style.display = 'none';
+  resultPanel.style.display = 'block';
+  document.getElementById('finalScore').textContent = `${arabicNum(score)} / ${arabicNum(questions.length)}`;
+  let msg = '';
+  if(score === 10){
+    msg = 'ممتازة جدًا! لقد أجبتِ على جميع الأسئلة بشكل صحيح 🌟';
+  } else if(score >= 8){
+    msg = 'رائعة جدًا! لديك فهم ممتاز للأفعال الخمسة 👏';
+  } else if(score >= 6){
+    msg = 'أحسنتِ! نتيجة جميلة، ومع مراجعة بسيطة ستصبحين بطلة القاعدة 💪';
+  } else {
+    msg = 'بداية جميلة 💖 أعيدي اللعب مرة أخرى لتحصلي على نقاط أكثر ونجوم أكثر.';
+  }
+  document.getElementById('finalMessage').textContent = msg;
+}
+</script>
+</body>
+</html>
